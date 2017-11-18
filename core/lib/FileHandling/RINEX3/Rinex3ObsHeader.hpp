@@ -230,18 +230,25 @@ namespace gpstk
          validNumSats           = 0x40000000, ///< # OF SATELLITES
          validPrnObs            = 0x80000000, ///< PRN / # OF OBS
    
-            /// This mask is for all required valid fields - RINEX 2
-         allValid2              = 0x001207CB,
+      //       /// This mask is for all required valid fields - RINEX 2
+      //    allValid2              = 0x001207CB,
 
-            /// RINEX 3.0 for moving receivers -- make default
-         allValid30             = 0x001205CB,
+      //       /// RINEX 3.0 for moving receivers -- make default
+      //    allValid30             = 0x001205CB,
 
-            // NB 19Jun2013 MGEX data does not include GLONASS SLOT
-            // and GLONASS COD/PHS/BIS records
-            // marker type is only required if the type is not GEODETIC or NON_GEODETIC
-         allValid301            = 0x0412058B, ///< RINEX 3.01
-         allValid302            = 0x0412058B, ///< RINEX 3.02
-         allValid303            = 0x0412058B  ///< RINEX 3.03
+      //       // NB 19Jun2013 MGEX data does not include GLONASS SLOT
+      //       // and GLONASS COD/PHS/BIS records
+      //       // marker type is only required if the type is not GEODETIC or NON_GEODETIC
+      //    allValid301            = 0x0412058B, ///< RINEX 3.01
+      //    allValid302            = 0x0412058B, ///< RINEX 3.02
+      //    allValid303            = 0x0412058B  ///< RINEX 3.03
+      //  for TEC calculate
+         tec_calculate_Valid = 0x100203,
+         allValid2 =tec_calculate_Valid,
+         allValid30 =tec_calculate_Valid,
+         allValid301=tec_calculate_Valid,
+         allValid302=tec_calculate_Valid,
+         allValid303=tec_calculate_Valid
       };
    
 #ifndef SWIG // nested structs/classes not supported by SWIG
