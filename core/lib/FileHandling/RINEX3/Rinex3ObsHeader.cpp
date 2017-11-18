@@ -1546,7 +1546,8 @@ namespace gpstk
          }
          catch(FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            cout<<"parse!x|" <<line<<"|"<<endl;
+            continue;//GPSTK_RETHROW(e);// for tec calculation bypass some no need error.
          }
          catch(Exception& e)
          {
