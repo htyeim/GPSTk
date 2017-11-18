@@ -1668,9 +1668,11 @@ namespace gpstk
       else if(version == 3.03) allValid = allValid303;
       else
       {
-         FFStreamError e("Unknown or unsupported RINEX version " + 
-                         asString(version,2));
-         GPSTK_THROW(e);
+         cout<<"rinex version~"<<version<<endl;
+         allValid = tec_calculate_Valid;//for tec calculate
+      //    FFStreamError e("Unknown or unsupported RINEX version " + 
+                        //  asString(version,2));
+      //    GPSTK_THROW(e);
       }
 
       if((valid & allValid) != allValid)
