@@ -116,9 +116,9 @@ namespace gpstk
       std::string STR(gpstk::StringUtils::upperCase(str));
       if (STR == std::string("GAL"))
          type = GAL;
-      else if (STR == std::string("GPSA"))
+      else if (STR == std::string("GPSA") || STR==std::string("BDSA"))
          type = GPSA;
-      else if (STR == std::string("GPSB"))
+      else if (STR == std::string("GPSB") || STR==std::string("BDSB"))
          type = GPSB;
       else
       {
