@@ -474,7 +474,7 @@ namespace gpstk
 
       // Deprecated; use GPSEphemeris.
       // Converts this Rinex3NavData to an EngEphemeris object.
-   Rinex3NavData::operator EngEphemeris() const throw()
+   Rinex3NavData::operator EngEphemeris() const// throw()
    {
       EngEphemeris ee;
 
@@ -618,7 +618,7 @@ namespace gpstk
    }
 
       // Casts Rinex3NavData to a GPSEphemeris object.
-   Rinex3NavData::operator GPSEphemeris() const throw()
+   Rinex3NavData::operator GPSEphemeris() const// throw()
    {
       GPSEphemeris gpse;
 
@@ -689,7 +689,7 @@ namespace gpstk
    }
 
       // Casts this Rinex3NavData to a GloEphemeris object.
-   Rinex3NavData::operator GloEphemeris() const throw()
+   Rinex3NavData::operator GloEphemeris() const// throw()
    {
 
       GloEphemeris gloe;
@@ -712,7 +712,7 @@ namespace gpstk
    }  // End of 'Rinex3NavData::operator GloEphemeris()'
 
       // Casts Rinex3NavData to a GalEphemeris object.
-   Rinex3NavData::operator GalEphemeris() const throw()
+   Rinex3NavData::operator GalEphemeris() const// throw()
    {
       GalEphemeris gale;
 
@@ -763,7 +763,7 @@ namespace gpstk
    }
 
       // Casts Rinex3NavData to a BDSEphemeris object.
-   Rinex3NavData::operator BDSEphemeris() const throw()
+   Rinex3NavData::operator BDSEphemeris() const// throw()
    {
       BDSEphemeris bdse;
 
@@ -809,7 +809,7 @@ namespace gpstk
    }
 
       // Casts Rinex3NavData to a QZSEphemeris object.
-   Rinex3NavData::operator QZSEphemeris() const throw()
+   Rinex3NavData::operator QZSEphemeris() const// throw()
    {
       QZSEphemeris qzse;
 
