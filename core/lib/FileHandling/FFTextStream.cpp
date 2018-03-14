@@ -159,8 +159,9 @@ namespace gpstk
          for (int i=0; i<line.length(); i++)
             if (!isprint(line[i]))
                {
-                  FFStreamError err("Non-text data in file.");
-                  GPSTK_THROW(err);
+                  line[i]='R';
+//                  FFStreamError err("Non-text data in file.");
+//                  GPSTK_THROW(err);
                }
             
          lineNumber++;
