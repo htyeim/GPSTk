@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -15,24 +15,25 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+//  
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//  Copyright 2004, The University of Texas at Austin
-//
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S.
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software.
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
+
 #include "NavID.hpp"
 
 #include "TestUtil.hpp"
@@ -76,6 +77,11 @@ int main()
    NavID testIDCNAVL5( SatID( 1, SatID::systemGPS ), ObsID( ObsID::otNavMsg, ObsID::cbL5, ObsID::tcI5 ) );
    if ( testIDCNAVL5.navType == NavID::ntGPSCNAVL5 ) TUPASS( "" );
    else TUFAIL( "ntGPSCNAVL5 instantiation failed." );
+   
+      //GPS CNAV2
+   NavID testIDCNAV2( SatID( 1, SatID::systemGPS ), ObsID( ObsID::otNavMsg, ObsID::cbL1, ObsID::tcG1X ) );
+   if ( testIDCNAV2.navType == NavID::ntGPSCNAV2 ) TUPASS( "" );
+   else TUFAIL( "ntGPSCNAV2 instantiation failed." );
    
       //GPS MNAV
    NavID testIDMNAV( SatID( 1, SatID::systemGPS ), ObsID( ObsID::otNavMsg, ObsID::cbL2, ObsID::tcM ) );
@@ -145,6 +151,11 @@ int main()
    l5 << testIDCNAVL5;
    if ( l5.str() == "GPS_CNAV_L5" ) TUPASS( "" );
    else TUFAIL( "String does not match GPS_L5_CNAV." );
+
+   stringstream cnav2;
+   cnav2 << testIDCNAV2;
+   if ( cnav2.str() == "GPS_CNAV2" ) TUPASS( "" );
+   else TUFAIL( "String does not match GPS_CNAV2." );
    
    stringstream mn;
    mn << testIDMNAV;
@@ -213,6 +224,10 @@ int main()
    if ( testIDCNAVL5String.navType == NavID::ntGPSCNAVL5 ) TUPASS( "" );
    else TUFAIL( "String input constructor failed to insantiate NavID object." );
    
+   NavID testIDCNAV2String( cnav2.str() );
+   if ( testIDCNAV2String.navType == NavID::ntGPSCNAV2 ) TUPASS( "" );
+   else TUFAIL( "String input constructor failed to insantiate NavID object." );
+   
    NavID testIDMNAVString( mn.str() );
    if ( testIDMNAVString.navType == NavID::ntGPSMNAV ) TUPASS( "" );
    else TUFAIL( "String input constructor failed to insantiate NavID object." );
@@ -265,6 +280,7 @@ int main()
    testSet.insert( testIDBD2 );
    testSet.insert( testIDBD1 );
    testSet.insert( testIDMNAV );
+   testSet.insert( testIDCNAV2 );
    testSet.insert( testIDCNAVL5 );
    testSet.insert( testIDCNAVL2 );
    testSet.insert( testIDLNAV );

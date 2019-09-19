@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,22 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
-//============================================================================
+//==============================================================================
+
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /// @file AntennaStore.cpp
 /// Store antenna phase center offset information, in AntexData objects, with
@@ -286,6 +287,7 @@ namespace gpstk
    {
       AntexData antenna;
       string name;
+      bool dualFrequency = true;
       try
       {
          if (getSatelliteAntenna(sys, n, name, antenna))
@@ -314,10 +316,9 @@ namespace gpstk
                }
                case 'C':
                {
-                  fact1 = 2.53125;
-                  fact2 = -1.52125;
+                  dualFrequency = false;
+                  fact1 = 1.00;
                   freq1 = "C01";
-                  freq2 = "C02";
                   break;
                }
 
@@ -352,19 +353,29 @@ namespace gpstk
            SVAtt = SatelliteAttitude(Rx,Sun);
 
            // phase center offset vector in body frame (at L1)
-           Triple pco1 = antenna.getPhaseCenterOffset(freq1);
-           Triple pco2 = antenna.getPhaseCenterOffset(freq2);
            Vector<double> PCO(3);
-           for(int i=0; i<3; i++)            // body frame, mm -> m, iono-free combo
-              PCO(i) = (fact1*pco1[i]+fact2*pco2[i])/1000.0;
+           if (dualFrequency)
+           {
+              Triple pco1 = antenna.getPhaseCenterOffset(freq1);
+              Triple pco2 = antenna.getPhaseCenterOffset(freq2);
+              for(int i=0; i<3; i++)            // body frame, mm -> m, iono-free combo
+                 PCO(i) = (fact1*pco1[i]+fact2*pco2[i])/1000.0;
+
+           }
+              // Single-frequency case.
+           else
+           {
+              Triple pco1 = antenna.getPhaseCenterOffset(freq1);
+              for(int i=0; i<3; i++)            // body frame, mm -> m, iono-free combo
+                 PCO(i) = (fact1*pco1[i])/1000.0;
+           }
 
            // PCO vector (from COM to PC) in ECEF XYZ frame, m
            Vector<double> SatPCOXYZ(3);
            SatPCOXYZ = transpose(SVAtt) * PCO;
            Triple pcoxyz = Triple(SatPCOXYZ(0), SatPCOXYZ(1), SatPCOXYZ(2));
-
+           
            return pcoxyz; 
-
          }
          else
          {

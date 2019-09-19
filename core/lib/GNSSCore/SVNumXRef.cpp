@@ -1,10 +1,10 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
 //  The GPSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
-//  by the Free Software Foundation; either version 2.1 of the License, or
+//  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
 //  The GPSTk is distributed in the hope that it will be useful,
@@ -15,21 +15,25 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-// //  Copyright 2004, The University of Texas at Austin
+//  
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
+
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//===========================================================================
+//==============================================================================
+
 /*  SVNumXRefMap.cpp
 *
 *   Applied Research Laboratories, The University of Texas at Austin
@@ -121,6 +125,7 @@ SVNumXRef::SVNumXRef( )
    NtoBMap.insert( make_pair( 71,IIF ));
    NtoBMap.insert( make_pair( 72,IIF ));
    NtoBMap.insert( make_pair( 73,IIF ));
+   NtoBMap.insert( make_pair( 74,III ));
 
 
       // Note: This table start with Block I values
@@ -265,7 +270,8 @@ SVNumXRef::SVNumXRef( )
    // NANU 2018010 (start)
    NtoPMap.insert( std::pair<const int, XRefNode>( 34, XRefNode( 18,
                                        CivilTime( 2018,  3, 8,  0,  0,  0.0, TimeSystem::GPS),
-                                       CommonTime::END_OF_TIME )));                   
+                                       CommonTime::END_OF_TIME )));    
+
    NtoPMap.insert( std::pair<const int, XRefNode>( 35, XRefNode(  5, 
                                        CivilTime( 1993,  8, 30,  0,  0,  0.0, TimeSystem::GPS),
                                        CivilTime( 2009,  3, 26, 20, 31,  0.0, TimeSystem::GPS))));
@@ -299,11 +305,19 @@ SVNumXRef::SVNumXRef( )
                                        CivilTime( 2014,  3, 3, 23, 59,  59.9, TimeSystem::GPS))));
    // NANU 2015080 (start) 
    NtoPMap.insert( std::pair<const int, XRefNode>( 36, XRefNode( 10, 
-                                       CivilTime( 2015, 9, 16,  0,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2015,  9, 16,  0,  0,  0.0, TimeSystem::GPS),
                                        CivilTime( 2015, 10, 26, 23, 59, 59.9, TimeSystem::GPS))));
-   // NANU 2017070 (start)
+   // NANU 2017070 (start), NANU 2018122 (stop)
    NtoPMap.insert( std::pair<const int, XRefNode>( 36, XRefNode( 4, 
-                                       CivilTime( 2017, 7, 15,  0,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2017,  7, 15,  0,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2017, 11, 29, 23, 59, 59.9, TimeSystem::GPS))));
+   // NANU 2018042 (start)
+   NtoPMap.insert( std::pair<const int, XRefNode>( 36, XRefNode( 4, 
+                                       CivilTime( 2018, 10, 10,  0,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2019,  1,  3, 23, 59, 59.9, TimeSystem::GPS))));
+   // NANU 2019104 (start)
+   NtoPMap.insert( std::pair<const int, XRefNode>( 36, XRefNode(  4,
+                                       CivilTime( 2019,   7,   18,  0,   0,  0.0, TimeSystem::GPS),
                                        CommonTime::END_OF_TIME  )));
 
    NtoPMap.insert( std::pair<const int, XRefNode>( 37, XRefNode(  7, 
@@ -409,6 +423,11 @@ SVNumXRef::SVNumXRef( )
                                        CivilTime( 2017,  1,  5,  0,  0,  0.0, TimeSystem::GPS),
                                        CivilTime( 2017,  5, 12, 23, 59, 59.9, TimeSystem::GPS))));
 
+   // NANU 2017122 (start), NANU 2018042 (end)
+   NtoPMap.insert( std::pair<const int, XRefNode>( 49, XRefNode(  4, 
+                                       CivilTime( 2017, 12,  1,  0,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2018,  9, 28, 23, 59, 59.9, TimeSystem::GPS))));
+
    NtoPMap.insert( std::pair<const int, XRefNode>( 50, XRefNode(  5, 
                                        CivilTime( 2009,  8, 27,  0,  0,  0.0, TimeSystem::GPS),
                                        CommonTime::END_OF_TIME  )));
@@ -492,6 +511,11 @@ SVNumXRef::SVNumXRef( )
    NtoPMap.insert( std::pair<const int, XRefNode>( 73, XRefNode(  10,
                                        CivilTime( 2015,  10,   31, 16,  23,  0.0, TimeSystem::GPS),
                                        CommonTime::END_OF_TIME  )));
+   //NANU 2019001 LAUNCH
+   //End date is end of On-orbit checkout
+   NtoPMap.insert( std::pair<const int, XRefNode>( 74, XRefNode(   4,
+                                       CivilTime( 2019,   1,    8, 23,  0,  0.0, TimeSystem::GPS),
+                                       CivilTime( 2019,   7,   12, 20,  0,  0.0, TimeSystem::GPS))));
                                          
                                        
       //Iterate through the data to produce the PtoNMap

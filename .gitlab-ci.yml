@@ -10,7 +10,7 @@ stages:
 
 # Default cmake arguments
 variables:
-  CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON ../"
+  CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
 
 # Check Stage
 # Runs static analysis on code.
@@ -53,19 +53,6 @@ build_redhat:
     paths:
     - build/
 
-build_osx:
-  stage: build
-  tags:
-    - osx
-  script:
-    - mkdir build
-    - cd build
-    - cmake -DPYTHON_INSTALL_PREFIX=install -DCMAKE_INSTALL_PREFIX=install/gpstk $CMAKE_ARG_DEFAULT
-    - make all -j 4
-  artifacts:
-    paths:
-    - build/
-
 build_windows:
   stage: build
   tags:
@@ -80,6 +67,10 @@ build_windows:
     - build/
 # Temporarily allow failures as Windows Runner issues are resolved
   allow_failure: true
+  only:
+    - schedules
+  except:
+    - merge_requests
 
 build_core:
   stage: build
@@ -117,16 +108,6 @@ test_redhat:
   dependencies:
     - build_redhat
 
-test_osx:
-  stage: test
-  tags:
-    - osx
-  script:
-    - cd build
-    - ctest -j 4
-  dependencies:
-    - build_osx
-
 test_windows:
   stage: test
   tags:
@@ -137,6 +118,10 @@ test_windows:
   dependencies:
     - build_windows
   allow_failure: true
+  only:
+    - schedules
+  except:
+    - merge_requests
 
 test_core:
   stage: test
@@ -145,19 +130,19 @@ test_core:
   script:
     - cd build
     - ctest -j 4
-    - cd ..
+    #- cd ..
     # Execute once to get the tabular output (which we can scrape for gitlab)
-    - echo $PWD
-    - gcovr --object-directory=build/core/tests/ORD/CMakeFiles/OrdUnitTests_T.dir -r . -e .*_T.cpp
+    #- echo $PWD
+    #- gcovr --object-directory=build/core/tests/ORD/CMakeFiles/OrdUnitTests_T.dir -r . -e .*_T.cpp
     # Execute again, generating html
-    - mkdir gcovr
-    - gcovr --object-directory=build/core/tests/ORD/CMakeFiles/OrdUnitTests_T.dir --html --html-details -o gcovr/index.html -r . -e .*_T.cpp
+    #- mkdir gcovr
+    #- gcovr --object-directory=build/core/tests/ORD/CMakeFiles/OrdUnitTests_T.dir --html --html-details -o gcovr/index.html -r . -e .*_T.cpp
   dependencies:
     - build_core
-  artifacts:
-    paths:
-    - gcovr
-    expire_in: 2 days
+  #artifacts:
+  #  paths:
+  #  - gcovr
+  #  expire_in: 2 days
 
 # Deploy Stage
 # Tests install of GPSTk on each platform, saves artifacts for downstream builds.
@@ -167,7 +152,11 @@ deploy_debian:
     - debian
   script:
     - cd build
+    - export gpstk=`pwd`/install
+    - export PYTHONPATH=$gpstk/lib/python2.7/site-packages
+    - mkdir -p $PYTHONPATH
     - make install -j 4
+    - python -c "import gpstk"
   artifacts:
     paths:
     - build/install
@@ -180,22 +169,17 @@ deploy_redhat:
     - redhat
   script:
     - cd build
+    - export gpstk=`pwd`/install
+    - export PYTHONPATH=$gpstk/lib/python2.7/site-packages
+    - mkdir -p $PYTHONPATH
     - make install -j 4
+    - python -c "import gpstk"
   artifacts:
     paths:
     - build/install
   dependencies:
     - build_redhat
 
-deploy_osx:
-  stage: deploy
-  tags:
-    - osx
-  script:
-    - cd build
-    - make install -j 4
-  dependencies:
-    - build_osx
 
 deploy_windows:
   stage: deploy
@@ -208,6 +192,10 @@ deploy_windows:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
   allow_failure: true  
+  only:
+    - schedules
+  except:
+    - merge_requests
 
 deploy_core:
   stage: deploy
@@ -228,9 +216,34 @@ package_debian:
   stage: package
   tags:
     - debian
+  only:
+    refs:
+      - master
   script:
-    - cd build
-    - make package -j 4
+    - rm -rf ../*.deb
+    - dpkg-buildpackage -us -uc -d
+    - mkdir debs
+    - mv ../*.deb debs 
+  artifacts:
+    paths:
+    - debs/
+  dependencies:
+    - build_debian
+
+package_debian_wheel:
+  stage: package
+  tags:
+    - debian
+  only:
+    refs:
+      - master
+  script:
+    - mkdir dist
+    - mv build/swig/module/dist/* dist
+    - echo "Saving wheel"
+  artifacts:
+    paths:
+      - dist/
   dependencies:
     - build_debian
 
@@ -238,21 +251,41 @@ package_redhat:
   stage: package
   tags:
     - redhat
+  only:
+    refs:
+     - master
   script:
     - cd build
-    - make package -j 4
+    - git clone gitlab@repositories.arlut.utexas.edu:sgl/rpm_files.git
+    - cd rpm_files
+    - cd SOURCES
+    - wget https://repositories.arlut.utexas.edu/sgl/gpstk/-/archive/v2.12/gpstk-v2.12.tar.gz
+    - mv gpstk-v2.12.tar.gz gpstk-v2.12-master.tar.gz
+    - cd ..
+    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" -ba SPECS/gpstk.spec
+  artifacts:
+    paths:
+      - build/rpm_files/RPMS/x86_64/gpstk-*
+      - build/rpm_files/SRPMS/gpstk-*
   dependencies:
     - build_redhat
 
-package_osx:
+package_redhat_wheel:
   stage: package
   tags:
-    - osx
+    - redhat
+  only:
+    refs:
+      - master
   script:
-    - cd build
-    - make package -j 4
+    - mkdir dist
+    - mv build/swig/module/dist/* dist
+    - echo "Saving wheel"
+  artifacts:
+    paths:
+      - dist/
   dependencies:
-    - build_osx
+    - build_redhat
 
 package_windows:
   stage: package
@@ -265,6 +298,10 @@ package_windows:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
   allow_failure: true
+  only:
+    - schedules
+  except:
+    - merge_requests
 
 package_core:
   stage: package

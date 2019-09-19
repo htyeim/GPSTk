@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /// @file ObsIDInitializer.cpp This class exists to initialize maps for ObsID.
 /// It was initally an inner class of ObsID but has been exported
@@ -97,6 +97,9 @@ namespace gpstk {
       ObsID::tcDesc[ObsID::tcI5]        = "GPSI5";         //Rinex I    // GPScivil_I
       ObsID::tcDesc[ObsID::tcQ5]        = "GPSQ5";         //Rinex Q    // GPScivil_Q
       ObsID::tcDesc[ObsID::tcIQ5]       = "GPSI+Q5";       //Rinex X    // GPScivil_I+Q
+      ObsID::tcDesc[ObsID::tcG1P]       = "GPSC1P";        //Rinex L    // GPScivil_L1P
+      ObsID::tcDesc[ObsID::tcG1D]       = "GPSC1D";        //Rinex S    // GPScivil_L1D
+      ObsID::tcDesc[ObsID::tcG1X]       = "GPSC1(D+P)";    //Rinex X    // GPScivil_L1D+P
 
       ObsID::tcDesc[ObsID::tcGCA]       = "GLOC/A";        //Rinex C    // GLOcivil
       ObsID::tcDesc[ObsID::tcGP]        = "GLOP";          //Rinex P    // GLOprecise
@@ -239,6 +242,9 @@ namespace gpstk {
       ObsID::cb2char[ObsID::cbB2] = '7';
       ObsID::cb2char[ObsID::cbB3] = '6';
 
+      ObsID::tc2char[ObsID::tcG1D]  = 'S';
+      ObsID::tc2char[ObsID::tcG1P]  = 'L';
+      ObsID::tc2char[ObsID::tcG1X]  = 'X';
       ObsID::tc2char[ObsID::tcC]    = 'C';
       ObsID::tc2char[ObsID::tcGCA]  = 'C';
       ObsID::tc2char[ObsID::tcGP]   = 'P';

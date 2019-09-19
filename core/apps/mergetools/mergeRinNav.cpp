@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,28 +16,29 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
-#include "RinexNavStream.hpp"
-#include "RinexNavHeader.hpp"
-#include "RinexNavData.hpp"
-#include "RinexNavFilterOperators.hpp"
+#include "Rinex3NavStream.hpp"
+#include "Rinex3NavHeader.hpp"
+#include "Rinex3NavData.hpp"
+#include "Rinex3NavFilterOperators.hpp"
+
 #include "FileFilterFrameWithHeader.hpp"
 #include "SystemTime.hpp"
 #include "CivilTime.hpp"
@@ -66,16 +67,16 @@ void MergeRinNav::process()
 
       // FFF will sort and merge the obs data using
       // a simple time check
-   FileFilterFrameWithHeader<RinexNavStream, RinexNavData, RinexNavHeader> 
-      fff(files);
+   FileFilterFrameWithHeader<Rinex3NavStream, Rinex3NavData, Rinex3NavHeader> fff(files);
 
       // get the header data
-   RinexNavHeaderTouchHeaderMerge merged;
+   Rinex3NavHeaderTouchHeaderMerge merged;
+
    fff.touchHeader(merged);
 
       // sort and filter the data
-   fff.sort(RinexNavDataOperatorLessThanFull());
-   fff.unique(RinexNavDataOperatorEqualsFull());
+   fff.sort(Rinex3NavDataOperatorLessThanFull());
+   fff.unique(Rinex3NavDataOperatorEqualsFull());
    
       // set the pgm/runby/date field
    merged.theHeader.fileType = string("NAVIGATION");
@@ -83,10 +84,10 @@ void MergeRinNav::process()
    merged.theHeader.fileAgency = std::string("gpstk");
    merged.theHeader.date = CivilTime(SystemTime()).asString();
    merged.theHeader.version = 2.1;
-   merged.theHeader.valid |= gpstk::RinexNavHeader::versionValid;
-   merged.theHeader.valid |= gpstk::RinexNavHeader::runByValid;
-   merged.theHeader.valid |= gpstk::RinexNavHeader::commentValid;
-   merged.theHeader.valid |= gpstk::RinexNavHeader::endValid;
+   merged.theHeader.valid |= gpstk::Rinex3NavHeader::validVersion;
+   merged.theHeader.valid |= gpstk::Rinex3NavHeader::validRunBy;
+   merged.theHeader.valid |= gpstk::Rinex3NavHeader::validComment;
+   merged.theHeader.valid |= gpstk::Rinex3NavHeader::validEoH;
 
       // write the header
    std::string outputFile = outputFileOption.getValue().front();

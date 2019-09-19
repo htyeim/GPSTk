@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /**
   *  @file OrbElemRinex.hpp
@@ -79,7 +79,7 @@ namespace gpstk
            *  @throw InvalidParameter if the data are not consistent.
            */ 
       void loadData( const RinexNavData& rinNav )
-	 throw( InvalidParameter); 
+	       throw( InvalidParameter); 
 
          /** Load an existing object from a Rinex3NavData object. 
            * @throw InvalidParameter if the data are not consistent.
@@ -100,7 +100,7 @@ namespace gpstk
          /// Returns the upper bound of the URA range
       double getAccuracy()  const
          throw( InvalidRequest );
-
+ 
         /* Should only be used by GPSOrbElemStore::rationalize()
          */
       void adjustBeginningValidity();
@@ -122,8 +122,14 @@ namespace gpstk
       void dumpTerse(std::ostream& s = std::cout) const
          throw( InvalidRequest );
 
-     
-         /// Ephemeris overhead information
+   private:
+      void determineTimes();
+      void determineTimesGPS();
+      void determineTimesGalileo();
+      void determineTimesDefault();
+
+   public:
+              /// Ephemeris overhead information
          //@{
       
       CommonTime transmitTime; /** Estimated beginning time of this sample */
@@ -136,6 +142,32 @@ namespace gpstk
       short  fitDuration;   /**< Fit duration (hours) */
       double Tgd;           /**< L1 and L2 correction term */
       long   HOWtime;        /**< Handover Word time */
+
+         // Static and public for test support pruposes.  Should only be used with OrbElemCNAV and OrbElemCNAV2
+         // in production.
+         //
+         // Determining the earliest transmit time is deterministic for non-upload cutovers 
+         // and needs to be done correctly in order to replicated user experience in post-processing, 
+         // even if the actual data were collected later than earliest transmission. However, in the
+         // case of upload cutovers, we have to depend on continuous collection to properly detect
+         // upload cutover times. 
+      static CommonTime computeBeginValid(const CommonTime& xmit,
+                                          const CommonTime& ctToe ); 
+      static CommonTime computeEndValid(const CommonTime& ctToe,
+                                        const int fitHours );
+      static bool  isNominalToe(const CommonTime& ctToe);
+
+      static long TWO_HOURS;
+      static long SIXTEEN_SECONDS;
+
+   private:
+         // The following two members are used for communicatiaon within
+         // OrbElemRinex.
+      double Toc3;            // As read from RINEX
+      double Toe3;
+      short fullXmitWeekNum; // As read from RINEX
+
+
          //@}
 
    }; // end class OrbElemRinex

@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 /**
  * @file OrbAlmStore.cpp
  */
@@ -627,6 +627,22 @@ void OrbAlmStore::dumpXmitAlm( std::ostream& s, short detail, const SatID& subjI
       return retList; 
    }
 
+   //-----------------------------------------------------------------------------
+   // Preceding method was written earlier, then this nearly-identical
+   // method was written when getIndexSet( ) was added to the XvtStoreSatID
+   // interface definition.
+   std::set<SatID> OrbAlmStore::getIndexSet() const
+   {
+      std::set<SatID> retSet;
+      std::list<SatID> sl = listOfSubjectSV();
+      std::list<SatID>::const_iterator cit;
+      for (cit=sl.begin();cit!=sl.end();cit++)
+      {
+         const SatID& sidr = *cit;
+         retSet.insert(sidr);
+      }
+      return retSet;
+   } 
 
 //-----------------------------------------------------------------------------
 // Goal is to find the set of orbital elements that would have been

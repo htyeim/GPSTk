@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,22 +16,24 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
-//============================================================================
+//==============================================================================
+
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//============================================================================
+//==============================================================================
+
  /*********************************************************************
 *
 *  Test program for gpstk/ext/lib/GNSSEph/OrbAlm*
@@ -86,8 +88,6 @@ public:
    unsigned createAndDump();
    void setUpLNAV();
    void setUpCNAV();
-   void setUpBDS();
-   void setUpGLO();
    gpstk::PackedNavBits getPnbLNav(const gpstk::ObsID& oidr,
                                    const std::string& str)
              throw(gpstk::InvalidParameter);
@@ -339,18 +339,6 @@ setUpCNAV()
    return;
 }
 
-void OrbAlm_T::
-setUpBDS()
-{
-
-}
-
-void OrbAlm_T::
-setUpGLO()
-{
-
-}
-
    //---------------------------------------------------------------
    gpstk::PackedNavBits
    OrbAlm_T::
@@ -493,12 +481,6 @@ int main()
   
   testClass.setUpCNAV();
   //errorTotal += testClass.createAndDump();
-  
-  testClass.setUpBDS();
-  //errorTotal += testClass.writeReadTest();
-  
-  testClass.setUpGLO();
-  //errorTotal += testClass.writeReadTest();
 
   cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
   return errorTotal; // Return the total number of errors

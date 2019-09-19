@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /**
   *  @file OrbAlmGen.hpp
@@ -196,24 +196,9 @@ namespace gpstk
                 throw(gpstk::InvalidParameter);
       void loadDataGpsCNAV(const gpstk::PackedNavBits& msg)
                 throw(gpstk::InvalidParameter);
-      void loadDataBDS(const gpstk::PackedNavBits& msg,
-                    const unsigned short hArg = 0)
-                throw(gpstk::InvalidParameter);
-      void loadDataIRN(const gpstk::PackedNavBits& msg,
-		       const unsigned short hArg = 0)
-                throw(gpstk::InvalidParameter);
-
          // Used internally during startup if WNa has not been received
          // prior to first almanac data page.         
       void estimateWeekNumber(const CommonTime& currTime);
-      void estimateWeekNumberBDS(const CommonTime& currTime);
-
-
-         // Only used for BDS
-      unsigned short translateToSubjectPRN(const bool isD1,
-                                           const unsigned short subframe,
-                                           const unsigned short page) const;
-
    }; // end class OrbAlmGen
 
    //@}

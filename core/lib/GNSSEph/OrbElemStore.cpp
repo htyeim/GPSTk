@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /**
  * @file OrbElemStore.cpp
@@ -194,6 +194,13 @@ namespace gpstk
      try
      {
      SatID sid = eph->satID;
+
+       // If this is the first set of elements and the valid sat system has not
+       // been set, then assume the intent is to store this system in the store. 
+     if (sysList.size()==0 && size()==0)
+        addSatSys(sid.system); 
+
+        // Find reference to map for this SV 
      OrbElemMap& oem = ube[sid];
      string ts = "%02m/%02d/%02y %02H:%02M:%02S";
 
@@ -245,10 +252,13 @@ namespace gpstk
            stringstream os;
            os << eph->satID;
            str += " but different Toe.   SV = " + os.str();
-           str += ", beginValid= " + printTime(eph->beginValid,ts);
+           str += ", beginValid(map)= " + printTime(eph->beginValid,ts);
            str += ", Toe(map)= " + printTime(eph->ctToe,ts);
-           str += ", Toe(candidate)= "+ printTime(oe->ctToe," %6.0g");
+           str += ", beginValid(candidate)" + printTime(oe->beginValid,ts);
+           str += ", Toe(candidate)= "+ printTime(oe->ctToe,ts);
            str += ". ";
+           if (dbg)
+             cout << str << endl; 
            InvalidParameter exc( str );
            GPSTK_THROW(exc); 
         }
@@ -487,7 +497,7 @@ namespace gpstk
  
 //-----------------------------------------------------------------------------
  
-     const OrbElemBase*
+   const OrbElemBase*
    OrbElemStore::findNearOrbElem(const SatID& sat, const CommonTime& t) const
       throw(InvalidRequest)
    {
@@ -496,6 +506,14 @@ namespace gpstk
       if (prn_i == ube.end())
       {
          InvalidRequest e("No OrbElem for satellite " + asString(sat));
+         GPSTK_THROW(e);
+      }
+
+         // Define reference to the relevant map of orbital elements
+      const OrbElemMap& em = prn_i->second;
+      if (em.empty())
+      {
+         InvalidRequest e("No orbital elements for satellite " + asString(sat));
          GPSTK_THROW(e);
       }
    
@@ -674,6 +692,17 @@ namespace gpstk
       return retList;
    }
 
+//-----------------------------------------------------------------------------
+   set<SatID> OrbElemStore::getIndexSet() const
+   {
+      set<SatID> retSet;
+      for( UBEMap::const_iterator ui = ube.begin(); ui != ube.end(); ui++)
+      {
+         SatID sid = ui->first;
+         retSet.insert(sid);
+      } 
+      return retSet;
+   }
 
 //-----------------------------------------------------------------------------
 

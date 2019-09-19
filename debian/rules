@@ -20,7 +20,7 @@ include /usr/share/dpkg/default.mk
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@ --with python2
+	dh $@  --parallel --with python2
 
 override_dh_auto_configure:
 	debian/check_versions_match.sh
@@ -28,10 +28,17 @@ override_dh_auto_configure:
 	 -DBUILD_EXT=ON \
 	 -DBUILD_PYTHON=ON \
 	 -DPYTHON_EXECUTABLE=/usr/bin/python \
-	 -DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python-gpstk/usr \
-         -DUSE_RPATH=OFF \
-         -DCMAKE_BUILD_TYPE=relwithdebinfo
+	 -DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python-gpstk \
+	 -DBUILD_FOR_PACKAGE_SWITCH=ON \
+	 -DUSE_RPATH=OFF \
+	 -DCMAKE_BUILD_TYPE=relwithdebinfo
+
+# The python package tries to install files to user local.  Allow it for now.
+override_dh_usrlocal:
 
 .PHONY: override_dh_strip
 override_dh_strip:
 	dh_strip --dbg-package=$(shell grep -o "Package: libgpstk[0-9.]\+-dbg" debian/control | cut -d " " -f 2)
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info

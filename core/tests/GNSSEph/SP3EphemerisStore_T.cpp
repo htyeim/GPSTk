@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -15,25 +15,25 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+//  
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//  Copyright 2004, The University of Texas at Austin
-//
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-// This software developed by Applied Research Laboratories at the
-// University of Texas at Austin, under contract to an agency or
-// agencies within the U.S.  Department of Defense. The
-// U.S. Government retains all rights to use, duplicate, distribute,
-// disclose, or release this software.
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-// Pursuant to DoD Directive 523024
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
+
 #include <list>
 #include <string>
 #include <iostream>
@@ -430,6 +430,47 @@ public:
                                   __LINE__);
             testMessageStream.str(std::string());
          }
+
+
+            //--------------------------------------------------------------------
+            // Check that getSatList() and getIndexSet() return expected values
+            // The data set has data for 29 SVs with PRN 12, PRN 16, and PRN 32 missing
+            //--------------------------------------------------------------------
+         set<SatID> expectedSet;
+         for (int i=1;i<=31;i++)
+         {
+            if (i!=12 && i!=16 && i!=32)
+            {
+               SatID sid(i,SatID::systemGPS);
+               expectedSet.insert(sid);
+            }
+         }
+     
+         vector<SatID> loadedList = apcStore.getSatList();
+         set<SatID> loadedSet = apcStore.getIndexSet();
+         TUASSERTE(int,expectedSet.size(),loadedSet.size());
+         TUASSERTE(int,expectedSet.size(),loadedList.size());
+
+         set<SatID>::const_iterator cit;
+         for (cit=expectedSet.begin();cit!=expectedSet.end();cit++)
+         {
+            bool found = false;
+            const SatID& sidr = *cit;
+            if (loadedSet.find(sidr)!=loadedSet.end())
+               found = true;
+            TUASSERTE(bool,true,found);
+         }
+
+         vector<SatID>::const_iterator citl;
+         for (citl=loadedList.begin();citl!=loadedList.end();citl++)
+         {
+            bool found = false;
+            const SatID& sidr = *citl;
+            if (expectedSet.find(sidr)!=expectedSet.end())
+               found = true;
+            TUASSERTE(bool,true,found);
+         }
+
       }
       catch (...)
       {

@@ -1,4 +1,4 @@
-//============================================================================
+//==============================================================================
 //
 //  This file is part of GPSTk, the GPS Toolkit.
 //
@@ -16,23 +16,23 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  Copyright 2004, The University of Texas at Austin
+//  Copyright 2004-2019, The University of Texas at Austin
 //
-//============================================================================
+//==============================================================================
 
-//============================================================================
+//==============================================================================
 //
-//This software developed by Applied Research Laboratories at the University of
-//Texas at Austin, under contract to an agency or agencies within the U.S. 
-//Department of Defense. The U.S. Government retains all rights to use,
-//duplicate, distribute, disclose, or release this software. 
+//  This software developed by Applied Research Laboratories at the University of
+//  Texas at Austin, under contract to an agency or agencies within the U.S. 
+//  Department of Defense. The U.S. Government retains all rights to use,
+//  duplicate, distribute, disclose, or release this software. 
 //
-//Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024 
 //
-// DISTRIBUTION STATEMENT A: This software has been approved for public 
-//                           release, distribution is unlimited.
+//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//                            release, distribution is unlimited.
 //
-//=============================================================================
+//==============================================================================
 
 /// @file ObsID.hpp
 /// gpstk::ObsID - navigation system, receiver, and file specification
@@ -148,6 +148,9 @@ namespace gpstk
          tcI5,      ///< Modernized GPS L5 civil in-phase
          tcQ5,      ///< Modernized GPS L5 civil quadrature
          tcIQ5,     ///< Modernized GPS L5 civil I+Q combined tracking
+         tcG1P,     ///< Modernized GPS L1C civil code tracking (pilot)
+         tcG1D,     ///< Modernized GPS L1C civil code tracking (data)
+         tcG1X,     ///< Modernized GPS L1C civil code tracking (pilot + data)
 
          tcGCA,     ///< Legacy Glonass civil signal
          tcGP,      ///< Legacy Glonass precise signal
