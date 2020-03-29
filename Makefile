@@ -3,3 +3,6 @@ add_upstream:
 fetch_upstream:
 	git fetch upstream
 	git pull upstream master
+
+track_upstream:
+	git checkout --track upstream/master
