@@ -40,6 +40,7 @@
 /// flags.
 
 #include <string>
+#include "CivilTime.hpp"
 #include "Exception.hpp"
 #include "BDSWeekSecond.hpp"
 
@@ -160,7 +161,11 @@ namespace gpstk
          // If the PRN ID is greatet than 5, assume this
          // is a MEO or IGSO SV and use the standard OrbitEph
          // version of svXvt
+         // http://mgex.igs.org/IGS_MGEX_Status_BDS.php
       if (satID.id>5) return(OrbitEph::svXvt(t));
+      if (satID.id==59) return(OrbitEph::svXvt(t));
+      if (satID.id==17 && t>CivilTime(2018,9,29)) return(OrbitEph::svXvt(t));
+      if (satID.id==18 && t<CivilTime(2019,5,17)) return(OrbitEph::svXvt(t));
 
          // If PRN ID is in the range 1-5, treat this as a GEO
          // 
