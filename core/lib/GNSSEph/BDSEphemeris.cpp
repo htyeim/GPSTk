@@ -46,7 +46,7 @@
 
 #include "BDSEphemeris.hpp"
 #include "GPSWeekSecond.hpp"
-#include "WGS84Ellipsoid.hpp"   
+#include "WGS84Ellipsoid.hpp"
 #include "TimeString.hpp"
 #include "Matrix.hpp"
 
@@ -79,20 +79,20 @@ namespace gpstk
 
    // adjustBeginningValidity determines the beginValid and endValid times.
    // Note that this is currently a "best guess" based on observation of Beidou
-   // operation. The concept of a fit interval is mentioned in the ICD, but the 
-   // fit interval is undefined. 
+   // operation. The concept of a fit interval is mentioned in the ICD, but the
+   // fit interval is undefined.
    //   - It appears the Toe is aligned with the beginning of transmit.
-   //   - It is assumed data should not be used prior to transmit.  
+   //   - It is assumed data should not be used prior to transmit.
    //   - The transmission period appears to be one hour.
    //   - It is assumed that the data will be good for another hour
-   //     in order to support SV position determination for 
+   //     in order to support SV position determination for
    //     users that cannot collect navigation message continuously.
    // @throw Invalid Request if the required data has not been stored.
    void BDSEphemeris::adjustValidity(void)
    {
       try {
          OrbitEph::adjustValidity();   // for dataLoaded check
-         
+
          beginValid = ctToe;  // Default case
 
             // If elements were updated during the hour, then
@@ -102,7 +102,7 @@ namespace gpstk
       }
       catch(Exception& e) { GPSTK_RETHROW(e); }
    }
-      
+
    // Dump the orbit, etc information to the given output stream.
    // @throw Invalid Request if the required data has not been stored.
    void BDSEphemeris::dumpBody(std::ostream& os) const
@@ -131,8 +131,8 @@ namespace gpstk
       string tform = "%03j %02H:%02M:%02S";
       try
       {
-	 os << " " << setw(3) << satID.id << " ! ";     
-         os << printTime(transmitTime,tform) << " ! " 
+	 os << " " << setw(3) << satID.id << " ! ";
+         os << printTime(transmitTime,tform) << " ! "
 	    << printTime(ctToe,tform) << " ! "
 	    << printTime(endValid,tform) << " !"
 	    << fixed << setprecision(2)
@@ -145,8 +145,8 @@ namespace gpstk
    }
 
    //  BDS is different in that some satellites are in GEO orbits.
-   //  According to the ICD, the 
-   //  SV position derivation for MEO and IGSO is identical to 
+   //  According to the ICD, the
+   //  SV position derivation for MEO and IGSO is identical to
    //  that for other kepler+perturbation systems (e.g. GPS); however,
    //  the position derivation for the GEO SVs is different.
    //  According to the ICD, the GEO SVs are those with PRNs 1-5.
@@ -157,18 +157,27 @@ namespace gpstk
    {
       if(!dataLoadedFlag)
          GPSTK_THROW(InvalidRequest("Data not loaded"));
-      
+
          // If the PRN ID is greatet than 5, assume this
          // is a MEO or IGSO SV and use the standard OrbitEph
          // version of svXvt
          // http://mgex.igs.org/IGS_MGEX_Status_BDS.php
-      if (satID.id>5) return(OrbitEph::svXvt(t));
-      if (satID.id==59) return(OrbitEph::svXvt(t));
-      if (satID.id==17 && t>CivilTime(2018,9,29)) return(OrbitEph::svXvt(t));
-      if (satID.id==18 && t<CivilTime(2019,5,17)) return(OrbitEph::svXvt(t));
+      if (satID.id>5 && satID.id!=59) {
 
+          if (satID.id == 17 ) {
+              if ( t > CivilTime(2018, 9, 29))
+                return (OrbitEph::svXvt(t));
+          }
+          else if (satID.id == 18) {
+              if(t < CivilTime(2019, 4, 24))
+                  return (OrbitEph::svXvt(t));
+          }
+          else{
+              return (OrbitEph::svXvt(t));
+          }
+      }
          // If PRN ID is in the range 1-5, treat this as a GEO
-         // 
+         //
          // The initial calculations are identical to the standard
          // Kepler+preturbation model
       Xvt sv;
@@ -256,8 +265,8 @@ namespace gpstk
       R    = A*G  + dr;
       AINC = i0 + tdrinc * elapte  +  di;
 
-      // At this point, the ICD formulation diverges to something 
-      // different. 
+      // At this point, the ICD formulation diverges to something
+      // different.
       //  Longitude of ascending node (ANLON)
       ANLON = OMEGA0 + OMEGAdot * elapte
                      - ell.angVelocity() * ToeSOW;
@@ -282,25 +291,25 @@ namespace gpstk
       // Rz matrix
       double angleZ = ell.angVelocity() * elapte;
       double cosZ = ::cos(angleZ);
-      double sinZ = ::sin(angleZ); 
+      double sinZ = ::sin(angleZ);
 
          // Initiailize 3X3 with all 0.0
-      gpstk::Matrix<double> matZ(3,3); 
+      gpstk::Matrix<double> matZ(3,3);
       // Row,Col
       matZ(0,0) =  cosZ;
       matZ(0,1) =  sinZ;
       matZ(0,2) =   0.0;
       matZ(1,0) = -sinZ;
-      matZ(1,1) =  cosZ; 
+      matZ(1,1) =  cosZ;
       matZ(1,2) =   0.0;
       matZ(2,0) =   0.0;
       matZ(2,1) =   0.0;
-      matZ(2,2) =   1.0; 
+      matZ(2,2) =   1.0;
 
       // Rx matrix
       double angleX = -5.0 * PI/180.0;    /// This is a constant.  Should set it once
       double cosX = ::cos(angleX);
-      double sinX = ::sin(angleX); 
+      double sinX = ::sin(angleX);
       gpstk::Matrix<double> matX(3,3);
       matX(0,0) =   1.0;
       matX(0,1) =   0.0;
@@ -326,7 +335,7 @@ namespace gpstk
       sv.x[2] = result(2,0);
 
       // derivatives of true anamoly and arg of latitude
-      dek = amm / G; 
+      dek = amm / G;
       dlk =  Ahalf * q * sqrtgm / (R*R);
 
       // in-plane, cross-plane, and radial derivatives
@@ -366,25 +375,25 @@ namespace gpstk
       dIntPos(2,0) = yip * cinc * div + dyp * sinc;
 
       /*
-      cout << "dIntPos : " << dIntPos(0,0) 
+      cout << "dIntPos : " << dIntPos(0,0)
                            << ", " << dIntPos(1,0)
                            << ", " << dIntPos(2,0) << endl;
-      double vMag = ::sqrt(dIntPos(0,0)*dIntPos(0,0) + 
-                           dIntPos(1,0)*dIntPos(1,0) +                    
+      double vMag = ::sqrt(dIntPos(0,0)*dIntPos(0,0) +
+                           dIntPos(1,0)*dIntPos(1,0) +
                            dIntPos(2,0)*dIntPos(2,0) );
-      cout << " dIntPos Mag: " << vMag << endl;     
-      cout << "dmatZ : " << dmatZ(0,0) 
+      cout << " dIntPos Mag: " << vMag << endl;
+      cout << "dmatZ : " << dmatZ(0,0)
                    << ", " << dmatZ(0,1)
-                   << ", " << dmatZ(0,2) << endl; 
-      cout << "dmatZ : " << dmatZ(1,0) 
+                   << ", " << dmatZ(0,2) << endl;
+      cout << "dmatZ : " << dmatZ(1,0)
                    << ", " << dmatZ(1,1)
-                   << ", " << dmatZ(1,2) << endl; 
-      cout << "dmatZ : " << dmatZ(2,0) 
+                   << ", " << dmatZ(1,2) << endl;
+      cout << "dmatZ : " << dmatZ(2,0)
                    << ", " << dmatZ(2,1)
-                   << ", " << dmatZ(2,2) << endl; 
+                   << ", " << dmatZ(2,2) << endl;
       */
       gpstk::Matrix<double> vresult(3,1);
-      vresult =  matZ * matX * dIntPos + 
+      vresult =  matZ * matX * dIntPos +
                 dmatZ * matX * inertialPos;
 
       /* debug
@@ -400,12 +409,12 @@ namespace gpstk
                     << ", " << secondHalf(1,0)
                     << ", " << secondHalf(2,0) << endl;
       end debug */
-     
+
       // Move results into output variables
       sv.v[0] = vresult(0,0);
       sv.v[1] = vresult(1,0);
       sv.v[2] = vresult(2,0);
-      
+
       return sv;
    }
 
